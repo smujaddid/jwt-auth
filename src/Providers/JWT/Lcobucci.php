@@ -103,16 +103,14 @@ class Lcobucci extends Provider implements JWT
     public function encode(array $payload)
     {
         // Remove the signature on the builder instance first.
-        $this->builder->unsign();
-
         try {
             $signingKey = $this->getSigningKey();
             $signingKey = is_string($signingKey) ? Key\InMemory::plainText($signingKey) : $signingKey;
             foreach ($payload as $key => $value) {
-                $this->builder->set($key, $value);
+                $this->builder->withHeader($key, $value);
             }
 
-            return (string) $this->builder->getToken($this->signer, $signingKey);
+            return $this->builder->getToken($this->signer, $signingKey)->toString();
         } catch (Exception $e) {
             throw new JWTException('Could not create token: '.$e->getMessage(), $e->getCode(), $e);
         }
@@ -138,11 +136,11 @@ class Lcobucci extends Provider implements JWT
         $verificationKey = $this->getVerificationKey();
         $verificationKey = is_string($verificationKey) ? Key\InMemory::plainText($verificationKey) : $verificationKey;
 
-        if (! $jwt->verify($this->signer, $verificationKey)) {
+        if (!$this->signer->verify($jwt->signature()->hash(), $jwt->payload(), $verificationKey)) {
             throw new TokenInvalidException('Token Signature could not be verified.');
         }
 
-        return (new Collection($jwt->getClaims()))->map(function ($claim) {
+        return (new Collection($jwt->claims()))->map(function ($claim) {
             return is_object($claim) ? $claim->getValue() : $claim;
         })->toArray();
     }
