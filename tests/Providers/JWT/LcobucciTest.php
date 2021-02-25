@@ -60,9 +60,6 @@ class LcobucciTest extends AbstractTestCase
         $signer = Mockery::any();
         $this->builder->shouldReceive('unsign')->once()->andReturnSelf();
         $this->builder->shouldReceive('set')->times(count($payload));
-        $this->builder->shouldReceive('getToken')->once()
-            ->with(Mockery::any(), Mockery::type(Key::class))
-            ->andReturn('foo.bar.baz');
 
         $token = $this->getProvider('secret', 'HS256')->encode($payload);
 

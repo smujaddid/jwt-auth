@@ -179,7 +179,7 @@ class Lcobucci extends Provider implements JWT
     protected function getSigningKey()
     {
         return $this->isAsymmetric() ?
-            Key\InMemory::file($this->getPrivateKey(), $this->getPassphrase()) :
+            Key\InMemory::file($this->getPrivateKey(), $this->getPassphrase() ?? '') :
             $this->getSecret();
     }
 
