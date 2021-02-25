@@ -14,8 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [7.2, 7.3, 7.4, 8.0]
-        laravel: [6.*, 7.*, 8.*]
+        php: [7.4, 8.0]
+        laravel: [8.*]
         os: [ubuntu-latest]
         coverage: [none]
         include:
@@ -23,9 +23,6 @@ jobs:
             laravel: 8.*
             os: ubuntu-latest
             coverage: xdebug
-        exclude:
-          - php: 7.2
-            laravel: 8.*
 
     name: '[P${{ matrix.php }}] [L${{ matrix.laravel }}] [${{ matrix.coverage }}]'
 
