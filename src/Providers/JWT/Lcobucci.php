@@ -107,7 +107,7 @@ class Lcobucci extends Provider implements JWT
 
         try {
             $signingKey = $this->getSigningKey();
-            $signingKey = is_string($signingKey) ? new Key($signingKey) : $signingKey;
+            $signingKey = is_string($signingKey) ? Key\InMemory::file($signingKey) : $signingKey;
             foreach ($payload as $key => $value) {
                 $this->builder->set($key, $value);
             }
@@ -136,7 +136,7 @@ class Lcobucci extends Provider implements JWT
         }
 
         $verificationKey = $this->getVerificationKey();
-        $verificationKey = is_string($verificationKey) ? new Key($verificationKey) : $verificationKey;
+        $verificationKey = is_string($verificationKey) ? Key\InMemory::file($verificationKey) : $verificationKey;
 
         if (! $jwt->verify($this->signer, $verificationKey)) {
             throw new TokenInvalidException('Token Signature could not be verified.');
@@ -179,7 +179,7 @@ class Lcobucci extends Provider implements JWT
     protected function getSigningKey()
     {
         return $this->isAsymmetric() ?
-            (new Keychain())->getPrivateKey($this->getPrivateKey(), $this->getPassphrase()) :
+            Key\InMemory::file($this->getPrivateKey(), $this->getPassphrase()) :
             $this->getSecret();
     }
 
@@ -189,7 +189,7 @@ class Lcobucci extends Provider implements JWT
     protected function getVerificationKey()
     {
         return $this->isAsymmetric() ?
-            (new Keychain())->getPublicKey($this->getPublicKey()) :
+            Key\InMemory::file($this->getPublicKey()) :
             $this->getSecret();
     }
 }
