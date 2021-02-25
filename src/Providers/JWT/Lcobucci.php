@@ -107,7 +107,7 @@ class Lcobucci extends Provider implements JWT
 
         try {
             $signingKey = $this->getSigningKey();
-            $signingKey = is_string($signingKey) ? Key\InMemory::file($signingKey) : $signingKey;
+            $signingKey = is_string($signingKey) ? Key\InMemory::plainText($signingKey) : $signingKey;
             foreach ($payload as $key => $value) {
                 $this->builder->set($key, $value);
             }
@@ -136,7 +136,7 @@ class Lcobucci extends Provider implements JWT
         }
 
         $verificationKey = $this->getVerificationKey();
-        $verificationKey = is_string($verificationKey) ? Key\InMemory::file($verificationKey) : $verificationKey;
+        $verificationKey = is_string($verificationKey) ? Key\InMemory::plainText($verificationKey) : $verificationKey;
 
         if (! $jwt->verify($this->signer, $verificationKey)) {
             throw new TokenInvalidException('Token Signature could not be verified.');
